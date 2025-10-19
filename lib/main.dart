@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       // Provider رئيسي
       create: (context) => NoteNotifier(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'SnapNote',
         theme: ThemeData(
           primarySwatch: Colors.blue,
