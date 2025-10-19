@@ -39,18 +39,31 @@ class _CaptureScreenState extends State<CaptureScreen> {
     final note = await ocrService.processImage(image);
 
     if (note != null) {
-      // استخدام Provider.of
       Provider.of<NoteNotifier>(context, listen: false).addNote(note);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('تم حفظ الملاحظة!')),
+          const SnackBar(
+            content: Text(
+              'Note saved successfully!',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.teal,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
         Navigator.pop(context);
       }
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('فشل في قراءة النص، جرب مرة أخرى')),
+          const SnackBar(
+            content: Text(
+              'Failed to read text. Please try again.',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     }
@@ -61,37 +74,81 @@ class _CaptureScreenState extends State<CaptureScreen> {
   @override
   Widget build(BuildContext context) {
     if (_controller == null || !_controller!.value.isInitialized) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        backgroundColor: Color(0xFF121212),
+        body: Center(
+          child: CircularProgressIndicator(color: Colors.tealAccent),
+        ),
+      );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('التقاط صورة')),
+      backgroundColor: const Color(0xFF121212),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1E1E1E),
+        elevation: 0,
+        title: const Text(
+          'Capture Note',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
-          Expanded(child: CameraPreview(_controller!)),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: CameraPreview(_controller!),
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 FloatingActionButton(
                   onPressed: _isProcessing ? null : _takePicture,
-                  backgroundColor: _isProcessing ? Colors.grey : Colors.green,
+                  backgroundColor:
+                      _isProcessing ? Colors.grey : Colors.tealAccent[400],
                   child: _isProcessing
                       ? const SizedBox(
-                          width: 20,
-                          height: 20,
+                          width: 24,
+                          height: 24,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
-                      : const Icon(Icons.camera, color: Colors.white),
+                      : const Icon(Icons.camera_alt, color: Colors.black),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('إلغاء'),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.tealAccent,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
               ],
             ),

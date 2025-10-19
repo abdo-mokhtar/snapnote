@@ -11,31 +11,78 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 2,
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: primaryColor,
-          child: Text(note.category[0],
-              style: const TextStyle(color: Colors.white)),
-        ),
-        title: Text(
-          note.title,
-          style: GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(note.category),
-            Text(
-              '${note.date.day}/${note.date.month}/${note.date.year}',
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
-          ],
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+      color: const Color(0xFF2D2D3A), // خلفية الكارت داكنة لتناسق الألوان
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
         onTap: () =>
             Navigator.pushNamed(context, '/note-detail', arguments: note),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              // 🟣 دائرة التصنيف
+              CircleAvatar(
+                radius: 26,
+                backgroundColor: primaryColor,
+                child: Text(
+                  note.category.isNotEmpty
+                      ? note.category[0].toUpperCase()
+                      : '?',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+
+              // 📝 تفاصيل الملاحظة
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      note.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      note.category,
+                      style: GoogleFonts.poppins(
+                        color: Colors.deepPurpleAccent,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${note.date.day}/${note.date.month}/${note.date.year}',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white38,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ➡️ أيقونة السهم
+              const Icon(Icons.arrow_forward_ios,
+                  color: Colors.white38, size: 18),
+            ],
+          ),
+        ),
       ),
     );
   }

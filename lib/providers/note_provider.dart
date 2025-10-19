@@ -16,7 +16,7 @@ class NoteNotifier extends ChangeNotifier {
 
   Future<void> _loadNotes() async {
     _notes = await _storage.loadNotes();
-    notifyListeners(); // إخطار الـUI بالتغيير
+    notifyListeners();
   }
 
   Future<void> addNote(Note note) async {
@@ -42,7 +42,7 @@ class NoteNotifier extends ChangeNotifier {
 
   void setSearchQuery(String query) {
     _searchQuery = query;
-    notifyListeners(); // هيفلتر في الـUI
+    notifyListeners();
   }
 
   List<Note> get filteredNotes {

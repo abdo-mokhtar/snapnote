@@ -18,11 +18,9 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
   @override
   void initState() {
     super.initState();
-
     _textController = TextEditingController();
     _titleController = TextEditingController();
 
-    // ✅ تأجيل استخدام context بعد أول build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args = ModalRoute.of(context)?.settings.arguments as Note?;
       setState(() {
@@ -51,26 +49,56 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('تفاصيل الملاحظة'),
+        backgroundColor: const Color(0xFF1E1E2A),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Note Details',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save),
+            icon:
+                const Icon(Icons.save_rounded, color: Colors.deepPurpleAccent),
             onPressed: _saveNote,
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: note == null
-            ? const Center(child: CircularProgressIndicator()) // أثناء التحميل
-            : Column(
+      body: note == null
+          ? const Center(
+              child: CircularProgressIndicator(color: Colors.deepPurpleAccent))
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
                 children: [
                   TextField(
                     controller: _titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'العنوان',
-                      border: OutlineInputBorder(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Enter title...',
+                      hintStyle: const TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: const Color(0xFF1E1E2A),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            const BorderSide(color: Colors.deepPurpleAccent),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                            color: Colors.deepPurpleAccent, width: 2),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -79,17 +107,62 @@ class _NoteDetailScreenState extends State<NoteDetailScreen> {
                       controller: _textController,
                       maxLines: null,
                       expands: true,
-                      decoration: const InputDecoration(
-                        labelText: 'النص',
-                        border: OutlineInputBorder(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                        height: 1.5,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Write your note here...',
+                        hintStyle: const TextStyle(color: Colors.white54),
+                        alignLabelWithHint: true,
+                        filled: true,
+                        fillColor: const Color(0xFF1E1E2A),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide:
+                              const BorderSide(color: Colors.deepPurpleAccent),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                              color: Colors.deepPurpleAccent, width: 2),
+                        ),
                       ),
                     ),
                   ),
-                  Text('التصنيف: ${note?.category ?? 'غير محدد'}'),
-                  Text('التاريخ: ${note?.date.toString().split(' ')[0] ?? ''}'),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2D2D3A),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.deepPurpleAccent),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Category: ${note?.category ?? 'Unspecified'}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                          ),
+                        ),
+                        Text(
+                          'Date: ${note?.date.toString().split(' ')[0] ?? ''}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-      ),
+            ),
     );
   }
 
