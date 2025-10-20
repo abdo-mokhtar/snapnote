@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // خلفية داكنة أنعم
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E1E2A),
         elevation: 0,
@@ -24,8 +24,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-
-      // ✅ جسم الصفحة
       body: Consumer<NoteNotifier>(
         builder: (context, noteNotifier, child) {
           final filteredNotes = noteNotifier.filteredNotes;
@@ -50,19 +48,62 @@ class HomeScreen extends StatelessWidget {
               itemCount: filteredNotes.length,
               itemBuilder: (context, index) {
                 final note = filteredNotes[index];
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  child: NoteCard(note: note),
+
+                return GestureDetector(
+                  onTap: () =>
+                      Navigator.pushNamed(context, '/detail', arguments: note),
+                  onLongPress: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        backgroundColor: const Color(0xFF1E1E2A),
+                        title: const Text('Delete Note',
+                            style: TextStyle(color: Colors.white)),
+                        content: const Text(
+                          'Are you sure you want to delete this note?',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel',
+                                style: TextStyle(color: Colors.white70)),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Delete',
+                                style: TextStyle(
+                                    color: Colors.redAccent,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm == true) {
+                      await Provider.of<NoteNotifier>(context, listen: false)
+                          .deleteNote(note.id);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Note deleted'),
+                          backgroundColor: Colors.deepPurpleAccent,
+                        ),
+                      );
+                    }
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: NoteCard(note: note),
+                  ),
                 );
               },
             ),
           );
         },
       ),
-
-      // 📸 زر الكاميرا العائم
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, '/capture'),
         backgroundColor: Colors.deepPurpleAccent,
@@ -72,8 +113,6 @@ class HomeScreen extends StatelessWidget {
         ),
         child: const Icon(Icons.camera_alt_rounded, color: Colors.white),
       ),
-
-      // 📂 شريط التنقل السفلي
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Color(0xFF1E1E2A),

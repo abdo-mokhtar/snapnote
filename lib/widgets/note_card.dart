@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../models/note_model.dart';
+import '../providers/note_provider.dart';
 import '../utils/constants.dart';
 
 class NoteCard extends StatelessWidget {
@@ -11,7 +13,7 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF2D2D3A), // خلفية الكارت داكنة لتناسق الألوان
+      color: const Color(0xFF2D2D3A),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -77,9 +79,42 @@ class NoteCard extends StatelessWidget {
                 ),
               ),
 
-              // ➡️ أيقونة السهم
-              const Icon(Icons.arrow_forward_ios,
-                  color: Colors.white38, size: 18),
+              // 🗑️ زر الحذف
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      backgroundColor: const Color(0xFF1E1E2A),
+                      title: const Text(
+                        'Delete Note',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      content: const Text(
+                        'Are you sure you want to delete this note?',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text('Cancel',
+                              style: TextStyle(color: Colors.white54)),
+                          onPressed: () => Navigator.pop(ctx, false),
+                        ),
+                        TextButton(
+                          child: const Text('Delete',
+                              style: TextStyle(color: Colors.redAccent)),
+                          onPressed: () => Navigator.pop(ctx, true),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirm == true) {
+                    context.read<NoteNotifier>().deleteNote(note.id);
+                  }
+                },
+              ),
             ],
           ),
         ),
