@@ -111,13 +111,13 @@ class _CaptureScreenState extends State<CaptureScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E1E1E),
-        elevation: 0,
-        title:
-            const Text('Capture Note', style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: const Color(0xFF1E1E1E),
+      //   elevation: 0,
+      //   title:
+      //       const Text('Capture Note', style: TextStyle(color: Colors.white)),
+      //   centerTitle: true,
+      // ),
       body: Column(
         children: [
           Expanded(
